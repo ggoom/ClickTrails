@@ -22,7 +22,6 @@ collapse.style.right = "10px";
 collapse.style.padding = "3px 6px";
 collapse.style.cursor = "pointer";
 collapse.style.color = "darkgray";
-shelf.appendChild(collapse);
 
 let reopen = document.createElement("span");
 reopen.innerText = "▲";
@@ -43,18 +42,21 @@ reopen.onclick = () => {
     reopen.remove();
     // document.body.style.height = "calc(100vh - 100px)";
     document.body.append(shelf);
+    shelf.appendChild(collapse);
     chrome.storage.local.set({"shelf_open": true});
 };
 
 chrome.storage.local.get(["shelf_open"]).then((result) => {
     let shelfOpen = true;
-    if (result["shelf_open"] == false) {
+    if (result["shelf_open"] === false) {
         shelfOpen = false;
     }
+    console.log(shelfOpen);
 
     if (shelfOpen) {
         // document.body.style.height = "calc(100vh - 100px)";
         document.body.append(shelf);
+        shelf.appendChild(collapse);
     } else {
         document.body.append(reopen);
     }
@@ -142,9 +144,9 @@ function elevateLinks(el, elevated) {
             return;
         }
         const total = Object.values(counts).reduce((a, b) => a + b, 0);
-        if (total < 10) {
-            return;
-        }
+        // if (total < 10) {
+        //     return;
+        // }
 
         if (counts[key] == null) {
             return;
