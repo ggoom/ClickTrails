@@ -1,3 +1,9 @@
+// const url = chrome.runtime.getURL('./data/new_data.json');
+
+// fetch(url)
+//     .then((response) => response.json()) //assuming file contains json
+//     .then((json) => chrome.storage.local.set(json));
+
 const MIN_CLICKS = 1;
 const tabURL = new URL(document.location.href.replace(/\/$/, "")); //.split(/[?#]/)[0]
 const tabHostname = tabURL.hostname;
@@ -71,6 +77,8 @@ Array.from(links).forEach((element) => {
     elevateLinks(element, elevated);
 });
 
+const initData = {'clicks': 0, 'hide': false, 'highlight': true, 'increase': 0, 'decrease': 0}
+
 function record(el) {
     console.log("clicked", el.href);
     chrome.storage.local.get(["click_data"]).then((result) => {
@@ -85,21 +93,21 @@ function record(el) {
         if (result["click_data"][tabHostname] == null) {
             result["click_data"][tabHostname] = {};
         }
-        let counts = result["click_data"][tabHostname];
+        let tabHostnameData = result["click_data"][tabHostname];
 
         if (clickedHostname === tabHostname && clickedHash !== "") {
-            if (counts[clickedHash] == null) {
-                counts[clickedHash] = 0;
+            if (tabHostnameData[clickedHash] == null) {
+                tabHostnameData[clickedHash] = initData;
             }
-            counts[clickedHash]++;
+            tabHostnameData[clickedHash]['clicks']++;
         } else {
-            if (counts[clickedURLStr] == null) {
-                counts[clickedURLStr] = 0;
+            if (tabHostnameData[clickedURLStr] == null) {
+                tabHostnameData[clickedURLStr] = initData;
             }
-            counts[clickedURLStr]++;
+            tabHostnameData[clickedURLStr]['clicks']++;
         }
 
-        result["click_data"][tabHostname] = counts;
+        result["click_data"][tabHostname] = tabHostnameData;
         // console.log(JSON.stringify(result))
         chrome.storage.local.set(result);
     });
@@ -139,19 +147,19 @@ function elevateLinks(el, elevated) {
         if (result["click_data"] == null) {
             return;
         }
-        let counts = result["click_data"][tabHostname];
-        if (counts == null) {
+        let tabHostnameData = result["click_data"][tabHostname];
+        if (tabHostnameData == null) {
             return;
         }
-        const total = Object.values(counts).reduce((a, b) => a + b, 0);
+        const total = Object.values(tabHostnameData).reduce((a, b) => a + b, 0);
         // if (total < 10) {
         //     return;
         // }
 
-        if (counts[key] == null) {
+        if (tabHostnameData[key] == null) {
             return;
         }
-        const numClicks = counts[key];
+        const numClicks = tabHostnameData[key]['clicks'];
 
         if (numClicks >= MIN_CLICKS) {
             console.log(key);
@@ -233,14 +241,14 @@ function recordButton(element) {
         if (result["button_data"][tabHostname] == null) {
             result["button_data"][tabHostname] = {};
         }
-        let counts = result["button_data"][tabHostname];
-        if (counts[buttonId] == null) {
-            counts[buttonId] = 0;
+        let tabHostnameData = result["button_data"][tabHostname];
+        if (tabHostnameData[buttonId] == null) {
+            tabHostnameData[buttonId] = initData;
         }
-        counts[buttonId]++;
+        tabHostnameData[buttonId]['counts']++;
 
-        result["button_data"][tabHostname] = counts;
-        console.log(JSON.stringify(result));
+        result["button_data"][tabHostname] = tabHostnameData;
+        // console.log(JSON.stringify(result));
         chrome.storage.local.set(result);
     });
 }
@@ -263,20 +271,20 @@ function elevateButton(el) {
         if (result["button_data"] == null) {
             return;
         }
-        let counts = result["button_data"][tabHostname];
-        if (counts == null) {
+        let tabHostnameData = result["button_data"][tabHostname];
+        if (tabHostnameData == null) {
             return;
         }
-        if (counts[buttonId] == null) {
+        if (tabHostnameData[buttonId] == null) {
             return;
         }
 
-        // const total = Object.values(counts).reduce((a, b) => a + b, 0);
+        // const total = Object.values(tabHostnameData).reduce((a, b) => a + b, 0);
         // if (total < 10) {
         //     return;
         // }
 
-        const numClicks = counts[buttonId];
+        const numClicks = tabHostnameData[buttonId]['counts'];
         if (numClicks >= MIN_CLICKS) {
             // add to shelf
             newEl = prepareButtonForShelf(el, numClicks);
@@ -329,5 +337,3 @@ function borderSize(numClicks) {
 function highlightOpacity(numClicks) {
     return Math.min(numClicks * 0.1, 0.8);
 }
-
-console.log(elevated);

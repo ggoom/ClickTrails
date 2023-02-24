@@ -1,33 +1,38 @@
 {
-  "manifest_version": 3,
-  "name": "Development",
-  "description": "Raise the prominence of frequently-used page elements.",
-  "version": "1.0",
-  "icons": {
-    "16": "images/icon-16.png",
-    "32": "images/icon-32.png",
-    "48": "images/icon-48.png",
-    "128": "images/icon-128.png"
-  },
-  "background": {
-    "service_worker": "background.js"
-  },
-  "content_scripts": [
-    {
-      "js": ["content.js"],
-      "matches": [
-        "https://*/*", "http://*/*"
-      ]
-    }
-  ],
-  "action": {
-    "default_icon": {
-      "16": "images/icon-16.png",
-      "32": "images/icon-32.png",
-      "48": "images/icon-48.png",
-      "128": "images/icon-128.png"
+    "manifest_version": 3,
+    "name": "Development",
+    "description": "Raise the prominence of frequently-used page elements.",
+    "version": "1.0",
+    "icons": {
+        "16": "images/icon-16.png",
+        "32": "images/icon-32.png",
+        "48": "images/icon-48.png",
+        "128": "images/icon-128.png"
     },
-      "default_popup": "popup.html"
-  },
-  "permissions": ["scripting", "activeTab", "tabs", "storage", "downloads"]
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "js": ["content.js"],
+            "matches": ["https://*/*", "http://*/*"]
+        }
+    ],
+    "action": {
+        "default_icon": {
+            "16": "images/icon-16.png",
+            "32": "images/icon-32.png",
+            "48": "images/icon-48.png",
+            "128": "images/icon-128.png"
+        },
+        "default_popup": "popup.html"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": ["data/*.json"],
+            "matches": ["https://*/*", "http://*/*"],
+            "extension_ids": []
+        }
+    ],
+    "permissions": ["scripting", "activeTab", "tabs", "storage", "downloads"]
 }
