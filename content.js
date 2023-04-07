@@ -4,7 +4,7 @@
 //     .then((response) => response.json()) //assuming file contains json
 //     .then((json) => chrome.storage.local.set(json));
 
-const MIN_CLICKS = 1;
+const MIN_CLICKS = 0;
 const tabURL = new URL(document.location.href.replace(/\/$/, "")); //.split(/[?#]/)[0]
 const tabHostname = tabURL.hostname;
 
@@ -172,10 +172,10 @@ function elevateLinks(el, elevated) {
             shelf.append(newEl);
 
             // highlight
-            el.style.boxShadow = `0px 0px 0px ${borderSize(
+            el.style.boxShadow = `inset 0px 0px 0px 2px rgba(255, 216, 77, ${highlightOpacity(
                 numClicks
-            )}px rgba(255, 216, 77, 0.8)`;
-            el.style.background = `rgba(255, 216, 77, ${highlightOpacity(
+            )})`;
+            el.style.background = `rgba(255, 232, 150, ${highlightOpacity(
                 numClicks
             )})`;
             el.style.position = 'relative';
@@ -256,7 +256,7 @@ function recordButton(element) {
         if (tabHostnameData[buttonId] == null) {
             tabHostnameData[buttonId] = initData;
         }
-        tabHostnameData[buttonId]['counts']++;
+        tabHostnameData[buttonId]['clicks']++;
 
         result["button_data"][tabHostname] = tabHostnameData;
         // console.log(JSON.stringify(result));
@@ -272,13 +272,13 @@ function elevateButton(el) {
         return;
     }
     const tabHostname = tabURL.hostname;
-
+    
     chrome.storage.local.get(["button_data"]).then((result) => {
         const buttonId = el.id;
         if (buttonId === "") {
             return;
         }
-
+        
         if (result["button_data"] == null) {
             return;
         }
@@ -295,16 +295,18 @@ function elevateButton(el) {
         //     return;
         // }
 
-        const numClicks = tabHostnameData[buttonId]['counts'];
+        const numClicks = tabHostnameData[buttonId]['clicks'];
         if (numClicks >= MIN_CLICKS) {
             // add to shelf
             newEl = prepareButtonForShelf(el, numClicks);
             shelf.append(newEl);
 
             // highlight
-            el.parentNode.style.boxShadow = `0px 0px 0px ${borderSize(
+            el.style.boxShadow = `0px 0px 0px ${borderSize(
                 numClicks
-            )}px rgba(252, 121, 237, 0.8)`;
+            )}px rgba(252, 121, 237, ${highlightOpacity(
+                numClicks
+            )})`;
         }
     });
 }
@@ -342,7 +344,8 @@ function prepareButtonForShelf(element, numClicks) {
 }
 
 function borderSize(numClicks) {
-    return Math.min(10, numClicks - MIN_CLICKS + 1);
+    return 3;
+    // return Math.min(10, numClicks - MIN_CLICKS + 1);
 }
 
 function highlightOpacity(numClicks) {
