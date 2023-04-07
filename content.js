@@ -57,7 +57,6 @@ chrome.storage.local.get(["shelf_open"]).then((result) => {
     if (result["shelf_open"] === false) {
         shelfOpen = false;
     }
-    console.log(shelfOpen);
 
     if (shelfOpen) {
         // document.body.style.height = "calc(100vh - 100px)";
@@ -179,6 +178,18 @@ function elevateLinks(el, elevated) {
             el.style.background = `rgba(255, 216, 77, ${highlightOpacity(
                 numClicks
             )})`;
+            el.style.position = 'relative';
+
+            // Number of clicks bubble
+            // fetch(chrome.runtime.getURL('./components/number.html')).then(r => r.text()).then(html => {
+            //     let wrapper = document.createElement('div');
+            //     wrapper.style.position = 'absolute';
+            //     wrapper.style.bottom = '0px';
+            //     wrapper.style.right = '0px';
+            //     wrapper.innerHTML = html;
+            //     wrapper.childNodes[0].insertAdjacentHTML('beforeend', `<div>${numClicks}</div>`);
+            //     el.insertAdjacentElement('beforeend', wrapper);
+            // });
         }
     });
 }
