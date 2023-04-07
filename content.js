@@ -8,65 +8,6 @@ const MIN_CLICKS = 0;
 const tabURL = new URL(document.location.href.replace(/\/$/, "")); //.split(/[?#]/)[0]
 const tabHostname = tabURL.hostname;
 
-let shelf = document.createElement("div");
-shelf.style.backgroundColor = "rgba(255, 255, 255, 0.8)";
-shelf.style.boxShadow = "0 0 5px 1px rgba(100, 100, 100, 0.5)";
-shelf.style.position = "fixed";
-shelf.style.bottom = "0px";
-shelf.style.left = "0px";
-shelf.style.height = "100px";
-shelf.style.width = "100vw";
-shelf.style.zIndex = "2147483647";
-shelf.style.overflow = "scroll";
-shelf.style.listStyleType = "none";
-
-let collapse = document.createElement("span");
-collapse.innerText = "▼";
-collapse.style.position = "absolute";
-collapse.style.top = "0px";
-collapse.style.right = "10px";
-collapse.style.padding = "3px 6px";
-collapse.style.cursor = "pointer";
-collapse.style.color = "darkgray";
-
-let reopen = document.createElement("span");
-reopen.innerText = "▲";
-reopen.style.position = "fixed";
-reopen.style.bottom = "0px";
-reopen.style.right = "0px";
-reopen.style.padding = "3px 10px";
-reopen.style.cursor = "pointer";
-reopen.style.color = "darkgray";
-
-collapse.onclick = () => {
-    shelf.remove();
-    document.body.append(reopen);
-    // document.body.style.height = "100vh";
-    chrome.storage.local.set({"shelf_open": false});
-};
-reopen.onclick = () => {
-    reopen.remove();
-    // document.body.style.height = "calc(100vh - 100px)";
-    document.body.append(shelf);
-    shelf.appendChild(collapse);
-    chrome.storage.local.set({"shelf_open": true});
-};
-
-chrome.storage.local.get(["shelf_open"]).then((result) => {
-    let shelfOpen = true;
-    if (result["shelf_open"] === false) {
-        shelfOpen = false;
-    }
-
-    if (shelfOpen) {
-        // document.body.style.height = "calc(100vh - 100px)";
-        document.body.append(shelf);
-        shelf.appendChild(collapse);
-    } else {
-        document.body.append(reopen);
-    }
-})
-
 const links = document.getElementsByTagName("a");
 // console.log(links);
 const elevated = [];
@@ -167,10 +108,6 @@ function elevateLinks(el, elevated) {
                 el = el.parentNode;
             }
 
-            // add to shelf
-            newEl = prepareElementForShelf(el, numClicks);
-            shelf.append(newEl);
-
             // highlight
             el.style.boxShadow = `inset 0px 0px 0px 2px rgba(255, 216, 77, ${highlightOpacity(
                 numClicks
@@ -192,32 +129,6 @@ function elevateLinks(el, elevated) {
             // });
         }
     });
-}
-
-function prepareElementForShelf(element, numClicks) {
-    newEl = element.cloneNode(true);
-    newEl.id = "";
-    container = document.createElement("div");
-    container.append(newEl);
-
-    // const styles = window.getComputedStyle(el);
-    // let cssText = styles.cssText;
-    // if (!cssText) {
-    // cssText = Array.from(styles).reduce((str, property) => {
-    //     return `${str}${property}:${styles.getPropertyValue(property)};`;
-    // }, '');
-    // }
-    // container.style.cssText = cssText;
-    // container.style.visibility = 'visible';
-
-    container.style.boxShadow = `0px 0px 0px ${borderSize(
-        numClicks
-    )}px rgba(255, 216, 77, 0.8)`;
-    container.style.margin = `10px`;
-    container.style.display = `inline-block`;
-    container.style.borderRadius = `5px`;
-    container.style.padding = `5px`;
-    return container;
 }
 
 const buttons = document.getElementsByTagName("button");
@@ -297,10 +208,6 @@ function elevateButton(el) {
 
         const numClicks = tabHostnameData[buttonId]['clicks'];
         if (numClicks >= MIN_CLICKS) {
-            // add to shelf
-            newEl = prepareButtonForShelf(el, numClicks);
-            shelf.append(newEl);
-
             // highlight
             el.style.boxShadow = `0px 0px 0px ${borderSize(
                 numClicks
@@ -309,38 +216,6 @@ function elevateButton(el) {
             )})`;
         }
     });
-}
-
-function prepareButtonForShelf(element, numClicks) {
-    let text = "";
-    if (element.innerText !== "") {
-        text = element.innerText;
-    } else if (element.value !== "") {
-        text = element.value;
-    } else if (element.title !== "") {
-        text = element.title;
-    }
-
-    newEl = document.createElement("button");
-    newEl.innerText = text;
-
-    newEl.style.margin = `10px 20px`;
-    newEl.style.padding = "10px";
-    newEl.style.decoration = "none";
-    newEl.style.display = `inline-block`;
-    newEl.style.boxShadow = `0px 0px 0px ${borderSize(
-        numClicks
-    )}px rgba(252, 121, 237, 0.8)`;
-    newEl.style.border = "none";
-    newEl.style.backgroundColor = "rgba(0, 0, 0, 0)";
-    newEl.style.borderRadius = "5px";
-
-    newEl.addEventListener("click", (_) => {
-        console.log(element);
-        element.click();
-    });
-
-    return newEl;
 }
 
 function borderSize(numClicks) {
