@@ -1,8 +1,11 @@
-// const url = chrome.runtime.getURL('./data/new_data.json');
+// ### Code to replace local storage data ###
+// const url = chrome.runtime.getURL('./data/new_data2.json');
 
 // fetch(url)
 //     .then((response) => response.json()) //assuming file contains json
 //     .then((json) => chrome.storage.local.set(json));
+
+// ### End code ###
 
 const MIN_CLICKS = 0;
 const tabURL = new URL(document.location.href.replace(/\/$/, "")); //.split(/[?#]/)[0]
@@ -17,7 +20,7 @@ Array.from(links).forEach((element) => {
     elevateLinks(element, elevated);
 });
 
-const initData = {'clicks': 0, 'hide': false, 'highlight': true, 'increase': 0, 'decrease': 0}
+const initData = {'trail_clicks': 0, 'disengage_clicks': 0}
 
 function record(el) {
     console.log("clicked", el.href);
@@ -39,12 +42,12 @@ function record(el) {
             if (tabHostnameData[clickedHash] == null) {
                 tabHostnameData[clickedHash] = initData;
             }
-            tabHostnameData[clickedHash]['clicks']++;
+            tabHostnameData[clickedHash]['trail_clicks']++;
         } else {
             if (tabHostnameData[clickedURLStr] == null) {
                 tabHostnameData[clickedURLStr] = initData;
             }
-            tabHostnameData[clickedURLStr]['clicks']++;
+            tabHostnameData[clickedURLStr]['trail_clicks']++;
         }
 
         result["click_data"][tabHostname] = tabHostnameData;
@@ -99,7 +102,7 @@ function elevateLinks(el, elevated) {
         if (tabHostnameData[key] == null) {
             return;
         }
-        const numClicks = tabHostnameData[key]['clicks'];
+        const numClicks = tabHostnameData[key]['trail_clicks'];
 
         if (numClicks >= MIN_CLICKS) {
             console.log(key);
@@ -167,7 +170,7 @@ function recordButton(element) {
         if (tabHostnameData[buttonId] == null) {
             tabHostnameData[buttonId] = initData;
         }
-        tabHostnameData[buttonId]['clicks']++;
+        tabHostnameData[buttonId]['trail_clicks']++;
 
         result["button_data"][tabHostname] = tabHostnameData;
         // console.log(JSON.stringify(result));
@@ -206,7 +209,7 @@ function elevateButton(el) {
         //     return;
         // }
 
-        const numClicks = tabHostnameData[buttonId]['clicks'];
+        const numClicks = tabHostnameData[buttonId]['trail_clicks'];
         if (numClicks >= MIN_CLICKS) {
             // highlight
             el.style.boxShadow = `0px 0px 0px ${borderSize(

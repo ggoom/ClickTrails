@@ -8,11 +8,9 @@ chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
     downloadButton.addEventListener("click", () => {
         chrome.storage.local.get(null, function (items) {
             // null implies all items
-            const linksAsArray = Object.entries(items["click_data"]);
-            const filteredLinks = linksAsArray.filter(([key, value]) => key === tabHostname);
     
             // Convert object to a string.
-            var result = JSON.stringify(filteredLinks, null, 2);
+            var result = JSON.stringify(items, null, 2);
     
             // Save as file
             var url = "data:application/json;base64," + btoa(result);
