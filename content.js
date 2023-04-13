@@ -20,7 +20,7 @@ Array.from(links).forEach((element) => {
     elevateLinks(element, elevated);
 });
 
-const initData = {'trail_clicks': 0, 'disengage_clicks': 0}
+const initData = { trail_clicks: 0, disengage_clicks: 0 };
 
 function record(el) {
     console.log("clicked", el.href);
@@ -42,12 +42,12 @@ function record(el) {
             if (tabHostnameData[clickedHash] == null) {
                 tabHostnameData[clickedHash] = initData;
             }
-            tabHostnameData[clickedHash]['trail_clicks']++;
+            tabHostnameData[clickedHash]["trail_clicks"]++;
         } else {
             if (tabHostnameData[clickedURLStr] == null) {
                 tabHostnameData[clickedURLStr] = initData;
             }
-            tabHostnameData[clickedURLStr]['trail_clicks']++;
+            tabHostnameData[clickedURLStr]["trail_clicks"]++;
         }
 
         result["click_data"][tabHostname] = tabHostnameData;
@@ -102,7 +102,7 @@ function elevateLinks(el, elevated) {
         if (tabHostnameData[key] == null) {
             return;
         }
-        const numClicks = tabHostnameData[key]['trail_clicks'];
+        const numClicks = tabHostnameData[key]["trail_clicks"];
 
         if (numClicks >= MIN_CLICKS) {
             console.log(key);
@@ -118,7 +118,7 @@ function elevateLinks(el, elevated) {
             el.style.background = `rgba(255, 232, 150, ${highlightOpacity(
                 numClicks
             )})`;
-            el.style.position = 'relative';
+            el.style.position = "relative";
 
             // Number of clicks bubble
             // fetch(chrome.runtime.getURL('./components/number.html')).then(r => r.text()).then(html => {
@@ -170,7 +170,7 @@ function recordButton(element) {
         if (tabHostnameData[buttonId] == null) {
             tabHostnameData[buttonId] = initData;
         }
-        tabHostnameData[buttonId]['trail_clicks']++;
+        tabHostnameData[buttonId]["trail_clicks"]++;
 
         result["button_data"][tabHostname] = tabHostnameData;
         // console.log(JSON.stringify(result));
@@ -186,13 +186,13 @@ function elevateButton(el) {
         return;
     }
     const tabHostname = tabURL.hostname;
-    
+
     chrome.storage.local.get(["button_data"]).then((result) => {
         const buttonId = el.id;
         if (buttonId === "") {
             return;
         }
-        
+
         if (result["button_data"] == null) {
             return;
         }
@@ -209,14 +209,12 @@ function elevateButton(el) {
         //     return;
         // }
 
-        const numClicks = tabHostnameData[buttonId]['trail_clicks'];
+        const numClicks = tabHostnameData[buttonId]["trail_clicks"];
         if (numClicks >= MIN_CLICKS) {
             // highlight
             el.style.boxShadow = `0px 0px 0px ${borderSize(
                 numClicks
-            )}px rgba(252, 121, 237, ${highlightOpacity(
-                numClicks
-            )})`;
+            )}px rgba(252, 121, 237, ${highlightOpacity(numClicks)})`;
         }
     });
 }
