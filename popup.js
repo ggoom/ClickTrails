@@ -27,8 +27,11 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tabHostname = tabURL.hostname;
 
     deactivateButton.addEventListener("click", () => {
-        chrome.storage.local.get(["settings"], function (result) {
+        chrome.storage.local.get(["settings", "button_data", "click_data", "history"], function (result) {
             result["settings"][tabHostname]["active"] = false;
+            delete result["button_data"][tabHostname];
+            delete result["click_data"][tabHostname];
+            delete result["history"][tabHostname]
             chrome.storage.local.set(result);
         });
     });
