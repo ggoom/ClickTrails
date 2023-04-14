@@ -5,7 +5,6 @@ chrome.storage.local.get(["mode"]).then((result) => {
         result["mode"] = "radioTrailMode";
     }
     const mode = result["mode"];
-    console.log(mode);
     const activeRadioBtn = document.getElementById(mode);
     activeRadioBtn.checked = true;
 });

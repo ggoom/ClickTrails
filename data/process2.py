@@ -15,7 +15,7 @@ for key in ['button_data', 'click_data']:
         for hash in domain_data:
             if domain not in new_data[key]:
                 new_data[key][domain] = {}
-            new_data[key][domain][hash] = {'trail_clicks': domain_data[hash]['clicks'], 'disengage_clicks': 0}
+            new_data[key][domain][hash] = {'clicks': domain_data[hash]['clicks'], 'mode': 1}
 
 
 f.close()
