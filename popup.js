@@ -1,3 +1,45 @@
+// Active vs. Deactivated
+chrome.storage.local.get(["settings"]).then((result) => {
+    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const url = tabs[0].url;
+        const tabURL = new URL(url.replace(/\/$/, "")); //.split(/[?#]/)[0]
+        const tabHostname = tabURL.hostname;
+
+        const activeSection = document.getElementById("active");
+        const inactiveSection = document.getElementById("inactive");
+        if (result["settings"][tabHostname]["active"] === false) {
+            activeSection.style.display = "none";
+            inactiveSection.style.display = "block";
+        } else {
+            inactiveSection.style.display = "none";
+            activeSection.style.display = "block";
+        }
+    });
+    
+});
+
+// Deactivate/Reactivate buttons:
+const deactivateButton = document.getElementById("deactivate");
+const reactivateButton = document.getElementById("reactivate");
+chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    const url = tabs[0].url;
+    const tabURL = new URL(url.replace(/\/$/, "")); //.split(/[?#]/)[0]
+    const tabHostname = tabURL.hostname;
+
+    deactivateButton.addEventListener("click", () => {
+        chrome.storage.local.get(["settings"], function (result) {
+            result["settings"][tabHostname]["active"] = false;
+            chrome.storage.local.set(result);
+        });
+    });
+    reactivateButton.addEventListener("click", () => {
+        chrome.storage.local.get(["settings"], function (result) {
+            result["settings"][tabHostname]["active"] = true;
+            chrome.storage.local.set(result);
+        });
+    });
+});
+
 // Radio buttons:
 const radioButtons = document.querySelectorAll('input[name="modeRadios"]');
 chrome.storage.local.get(["mode"]).then((result) => {
@@ -19,10 +61,9 @@ for (const radioButton of radioButtons) {
     });
 }
 
+
 // Download data button:
-
 const downloadButton = document.getElementById("downloadData");
-
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const url = tabs[0].url;
     const tabURL = new URL(url.replace(/\/$/, "")); //.split(/[?#]/)[0]
