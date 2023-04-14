@@ -1,3 +1,27 @@
+// Radio buttons:
+const radioButtons = document.querySelectorAll('input[name="modeRadios"]');
+chrome.storage.local.get(["mode"]).then((result) => {
+    if (result["mode"] == null) {
+        result["mode"] = "radioTrailMode";
+    }
+    const mode = result["mode"];
+    console.log(mode);
+    const activeRadioBtn = document.getElementById(mode);
+    activeRadioBtn.checked = true;
+});
+for (const radioButton of radioButtons) {
+    radioButton.addEventListener("change", (e) => {
+        const mode = e.target.id;
+        chrome.storage.local.get(["mode"]).then((result) => {
+            result["mode"] = mode;
+            console.log(JSON.stringify(result));
+            chrome.storage.local.set(result);
+        });
+    });
+}
+
+// Download data button:
+
 const downloadButton = document.getElementById("downloadData");
 
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
