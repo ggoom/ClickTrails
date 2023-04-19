@@ -12,6 +12,9 @@ const tabHostname = tabURL.hostname;
 chrome.storage.local
     .get(["click_data", "button_data", "mode", "history", "settings"])
     .then((result) => {
+        if (result["settings"][tabHostname]["active"] === undefined) {
+            result["settings"][tabHostname]["active"] = true;
+        }
         if (result["settings"][tabHostname]["active"] === true) {
             // Initialize local storage
 
@@ -245,11 +248,11 @@ chrome.storage.local
             }
 
             function highlightOpacity(numClicks) {
-                return Math.min(numClicks * 0.1, 0.8);
+                return Math.min(numClicks * 0.1 + 0.1, 0.9);
             }
 
             function disengageOpacity(numClicks) {
-                return Math.max(1.0 + numClicks * 0.1, 0.2);
+                return Math.max(1.0 + numClicks * 0.1 - 0.1, 0.1);
             }
         }
     });

@@ -7,7 +7,10 @@ chrome.storage.local.get(["settings"]).then((result) => {
 
         const activeSection = document.getElementById("active");
         const inactiveSection = document.getElementById("inactive");
-        if (result["settings"][tabHostname]["active"] === false) {
+        if (
+            result["settings"][tabHostname]["active"] &&
+            result["settings"][tabHostname]["active"] === false
+        ) {
             activeSection.style.display = "none";
             inactiveSection.style.display = "block";
         } else {
@@ -15,7 +18,6 @@ chrome.storage.local.get(["settings"]).then((result) => {
             activeSection.style.display = "block";
         }
     });
-    
 });
 
 // Deactivate/Reactivate buttons:
@@ -27,13 +29,16 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tabHostname = tabURL.hostname;
 
     deactivateButton.addEventListener("click", () => {
-        chrome.storage.local.get(["settings", "button_data", "click_data", "history"], function (result) {
-            result["settings"][tabHostname]["active"] = false;
-            delete result["button_data"][tabHostname];
-            delete result["click_data"][tabHostname];
-            delete result["history"][tabHostname]
-            chrome.storage.local.set(result);
-        });
+        chrome.storage.local.get(
+            ["settings", "button_data", "click_data", "history"],
+            function (result) {
+                result["settings"][tabHostname]["active"] = false;
+                delete result["button_data"][tabHostname];
+                delete result["click_data"][tabHostname];
+                delete result["history"][tabHostname];
+                chrome.storage.local.set(result);
+            }
+        );
     });
     reactivateButton.addEventListener("click", () => {
         chrome.storage.local.get(["settings"], function (result) {
@@ -64,15 +69,14 @@ for (const radioButton of radioButtons) {
     });
 }
 
-
-// Download data button:
-const downloadButton = document.getElementById("downloadData");
+// Debugging features:
+const downloadAllButton = document.getElementById("downloadAll");
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const url = tabs[0].url;
     const tabURL = new URL(url.replace(/\/$/, "")); //.split(/[?#]/)[0]
     const tabHostname = tabURL.hostname;
 
-    downloadButton.addEventListener("click", () => {
+    downloadAllButton.addEventListener("click", () => {
         chrome.storage.local.get(null, function (items) {
             // null implies all items
 
