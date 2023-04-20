@@ -12,12 +12,11 @@ const tabHostname = tabURL.hostname;
 chrome.storage.local
     .get(["click_data", "button_data", "mode", "history", "settings"])
     .then((result) => {
-        if (result["settings"][tabHostname]["active"] === undefined) {
-            result["settings"][tabHostname]["active"] = true;
-        }
-        if (result["settings"][tabHostname]["active"] === true) {
+        if (
+            result["settings"][tabHostname] == null ||
+            result["settings"][tabHostname]["active"] === true
+        ) {
             // Initialize local storage
-
             if (result["mode"] == null) {
                 result["mode"] = "radioTrailMode";
             }
@@ -40,6 +39,11 @@ chrome.storage.local
                 result["history"][tabHostname] = {
                     click_data: {},
                     button_data: {},
+                };
+            }
+            if (result["settings"][tabHostname] == null) {
+                result["settings"][tabHostname] = {
+                    active: true,
                 };
             }
             chrome.storage.local.set(result);

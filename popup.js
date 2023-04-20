@@ -8,7 +8,8 @@ chrome.storage.local.get(["settings"]).then((result) => {
         const activeSection = document.getElementById("active");
         const inactiveSection = document.getElementById("inactive");
         if (
-            result["settings"][tabHostname]["active"] &&
+            tabHostname in result["settings"] &&
+            "active" in result["settings"][tabHostname] &&
             result["settings"][tabHostname]["active"] === false
         ) {
             activeSection.style.display = "none";
