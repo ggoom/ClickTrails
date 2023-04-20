@@ -24,13 +24,16 @@ chrome.storage.local.get(["settings"]).then((result) => {
     });
 });
 
-// Deactivate/Reactivate buttons:
 const deactivateButton = document.getElementById("deactivate");
 const reactivateButton = document.getElementById("reactivate");
+const radioButtons = document.querySelectorAll('input[name="modeRadios"]');
+
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const url = tabs[0].url;
     const tabURL = new URL(url.replace(/\/$/, "")); //.split(/[?#]/)[0]
     const tabHostname = tabURL.hostname;
+
+    // Deactivate button
     if (deactivateButton) {
         deactivateButton.addEventListener("click", () => {
             chrome.storage.local.get(
@@ -46,6 +49,8 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             );
         });
     }
+
+    // Reactivate button
     if (reactivateButton) {
         reactivateButton.addEventListener("click", () => {
             chrome.storage.local.get(["settings"], function (result) {
@@ -55,26 +60,55 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             });
         });
     }
+
+    // Radio buttons
+    chrome.storage.local.get(["settings"]).then((result) => {
+        if (
+            result["settings"][tabHostname] === undefined ||
+            result["settings"][tabHostname]["mode"] == null
+        ) {
+            result["settings"][tabHostname]["mode"] = 1;
+        }
+        const mode = result["settings"][tabHostname]["mode"];
+        const activeRadioBtn = document.getElementById(modeToName(mode));
+        activeRadioBtn.checked = true;
+    });
+    for (const radioButton of radioButtons) {
+        radioButton.addEventListener("change", (e) => {
+            const modeName = e.target.id;
+            chrome.storage.local.get(["settings"]).then((result) => {
+                result["settings"][tabHostname]["mode"] = nameToMode(modeName);
+                console.log(result["settings"][tabHostname]);
+                chrome.storage.local.set(result);
+            });
+        });
+    }
 });
 
-// Radio buttons:
-const radioButtons = document.querySelectorAll('input[name="modeRadios"]');
-chrome.storage.local.get(["mode"]).then((result) => {
-    if (result["mode"] == null) {
-        result["mode"] = "radioTrailMode";
+function modeToName(mode) {
+    switch (mode) {
+        case 0:
+            return "radioOff";
+        case 1:
+            return "radioTrailMode";
+        case -1:
+            return "radioDisengageMode";
+        default:
+            return "radioTrailMode";
     }
-    const mode = result["mode"];
-    const activeRadioBtn = document.getElementById(mode);
-    activeRadioBtn.checked = true;
-});
-for (const radioButton of radioButtons) {
-    radioButton.addEventListener("change", (e) => {
-        const mode = e.target.id;
-        chrome.storage.local.get(["mode"]).then((result) => {
-            result["mode"] = mode;
-            chrome.storage.local.set(result);
-        });
-    });
+}
+
+function nameToMode(name) {
+    switch (name) {
+        case "radioOff":
+            return 0;
+        case "radioTrailMode":
+            return 1;
+        case "radioDisengageMode":
+            return -1;
+        default:
+            return 1;
+    }
 }
 
 // Debugging features:
