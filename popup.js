@@ -72,7 +72,6 @@ for (const radioButton of radioButtons) {
         const mode = e.target.id;
         chrome.storage.local.get(["mode"]).then((result) => {
             result["mode"] = mode;
-            console.log(JSON.stringify(result));
             chrome.storage.local.set(result);
         });
     });
