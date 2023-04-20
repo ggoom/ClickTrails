@@ -10,10 +10,15 @@
         />
     </head>
     <body>
-        <div class="container" style="padding-top:1em; padding-bottom:1em;">
+        <div class="container" style="padding-top: 1em; padding-bottom: 1em">
             <div id="active">
                 <div class="form-check">
-                    <div><h4>Select Scent</h4></div>
+                    <div>
+                        <h4>
+                            Select Mode for
+                            <b><span class="domainName"></span></b>
+                        </h4>
+                    </div>
                     <input
                         class="form-check-input"
                         type="radio"
@@ -24,11 +29,14 @@
                         <b>Highlight Mode</b>
                     </label>
                     <div>
-                        Highlights the links that you click on, and the
-                        highlights become brighter the more that you click.
-                        <br />Useful for tracing your steps in everyday
-                        activities on the web like shopping and browsing the
-                        web.
+                        In this mode, links that you click on are highlighted,
+                        and the highlights become brighter the more that you
+                        click.
+                        <br /><small
+                            >Useful for tracing your steps in everyday
+                            activities on the web like shopping and browsing the
+                            web.</small
+                        >
                     </div>
                 </div>
                 <div class="form-check">
@@ -43,10 +51,13 @@
                         <b>Fade Mode</b>
                     </label>
                     <div>
-                        Decreases the appearance of the links that you click on,
-                        and the links grow fainter the more you click.
-                        <br />Useful for activities that you want to avoid doing
-                        more of, like shopping and navigating to social media.
+                        In this mode, links that you click on fade, and the
+                        links grow fainter the more you click.
+                        <br /><small
+                            >Useful for activities that you want to avoid doing
+                            more of, like shopping and navigating to social
+                            media.</small
+                        >
                     </div>
                 </div>
                 <div class="form-check">
@@ -60,22 +71,26 @@
                     <label class="form-check-label" for="radioOff">
                         <b>Off</b>
                     </label>
-                    <div>Leaves no traces (and collects no data).</div>
+                    <div>
+                        In this mode, clicks have no effect and no data is
+                        collected, though any data previously collected is
+                        retained.
+                    </div>
                     <hr />
-                    <h4>Deactivate ClickTrails</h4>
+                    <h4>Deactivate ClickTrails?</h4>
                     <p>
-                        Clicking this button will delete all data that this
-                        extension has collected on
-                        <b><span id="domainName"></span></b>. This extension
-                        will not collect any data on this site unless
-                        reactivated.
+                        Clicking this button will permanently delete all data
+                        that this extension has collected on
+                        <b><span class="domainName"></span></b>. This extension
+                        will not collect any data on this site unless you
+                        reactivate it on this site.
                     </p>
                     <button
                         type="button"
-                        class="btn btn-danger"
+                        class="btn btn-outline-danger"
                         id="deactivate"
                     >
-                        Deactivate ClickTrails on this domain
+                        Deactivate ClickTrails on this site
                     </button>
                     <!-- <hr />
                 <button id="downloadAll">Download All</button>
@@ -90,8 +105,18 @@
                 </div>
             </div>
             <div id="inactive">
-                <button type="button" class="btn btn-success" id="reactivate">
-                    Reactivate ClickTrails on this domain
+                <h4>Reactivate ClickTrails?</h4>
+                <p>
+                    Clicking this button will reactivate this extension on
+                    <b><span class="domainName"></span></b>, and this extension
+                    will start collecting data on this site again.
+                </p>
+                <button
+                    type="button"
+                    class="btn btn-outline-success"
+                    id="reactivate"
+                >
+                    Reactivate ClickTrails on this site
                 </button>
                 <hr />
                 <a target="_blank" href="./index.html" id="reviewDownload"

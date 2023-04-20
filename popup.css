@@ -2,3 +2,7 @@ body {
     width: 500px;
     padding: 8px;
 }
+
+small {
+    color: gray;
+}

@@ -7,6 +7,9 @@ chrome.storage.local.get(["settings"]).then((result) => {
 
         const activeSection = document.getElementById("active");
         const inactiveSection = document.getElementById("inactive");
+        const hostnameSpans = document.getElementsByClassName("domainName");
+        Array.from(hostnameSpans).forEach((el) => (el.innerHTML = tabHostname));
+        
         if (
             tabHostname in result["settings"] &&
             "active" in result["settings"][tabHostname] &&
@@ -17,9 +20,6 @@ chrome.storage.local.get(["settings"]).then((result) => {
         } else {
             inactiveSection.style.display = "none";
             activeSection.style.display = "block";
-            const hostnameSpan = document.getElementById("domainName");
-            hostnameSpan.innerHTML = tabHostname;
-            console.log(hostnameSpan);
         }
     });
 });
@@ -41,6 +41,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
                     delete result["click_data"][tabHostname];
                     delete result["history"][tabHostname];
                     chrome.storage.local.set(result);
+                    window.location.reload();
                 }
             );
         });
@@ -50,6 +51,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             chrome.storage.local.get(["settings"], function (result) {
                 result["settings"][tabHostname]["active"] = true;
                 chrome.storage.local.set(result);
+                window.location.reload();
             });
         });
     }
