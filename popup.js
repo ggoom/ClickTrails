@@ -9,7 +9,7 @@ chrome.storage.local.get(["settings"]).then((result) => {
         const inactiveSection = document.getElementById("inactive");
         const hostnameSpans = document.getElementsByClassName("domainName");
         Array.from(hostnameSpans).forEach((el) => (el.innerHTML = tabHostname));
-        
+
         if (
             tabHostname in result["settings"] &&
             "active" in result["settings"][tabHostname] &&

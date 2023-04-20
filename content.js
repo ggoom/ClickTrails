@@ -13,7 +13,7 @@ chrome.storage.local
     .get(["click_data", "button_data", "mode", "history", "settings"])
     .then((result) => {
         if (
-            result["settings"][tabHostname] == null ||
+            Object.keys(result).length === 0 ||
             result["settings"][tabHostname]["active"] === true
         ) {
             // Initialize local storage
@@ -40,6 +40,9 @@ chrome.storage.local
                     click_data: {},
                     button_data: {},
                 };
+            }
+            if (result["settings"] == null) {
+                result["settings"] = {};
             }
             if (result["settings"][tabHostname] == null) {
                 result["settings"][tabHostname] = {
