@@ -10,68 +10,94 @@
         />
     </head>
     <body>
-        <div id="active">
-            <div class="form-check">
-                <input
-                    class="form-check-input"
-                    type="radio"
-                    name="modeRadios"
-                    id="radioTrailMode"
-                />
-                <label class="form-check-label" for="radioTrailMode">
-                    Trail Mode
-                </label>
-                <div>
-                    Default. Highlights the links that you click on, and the
-                    highlights become brighter the more that you click.
-                    <br />Useful for tracing your steps in everyday activities
-                    on the web like shopping and browsing the web.
+        <div class="container" style="padding-top:1em; padding-bottom:1em;">
+            <div id="active">
+                <div class="form-check">
+                    <div><h4>Select Scent</h4></div>
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="modeRadios"
+                        id="radioTrailMode"
+                    />
+                    <label class="form-check-label" for="radioTrailMode">
+                        <b>Highlight Mode</b>
+                    </label>
+                    <div>
+                        Highlights the links that you click on, and the
+                        highlights become brighter the more that you click.
+                        <br />Useful for tracing your steps in everyday
+                        activities on the web like shopping and browsing the
+                        web.
+                    </div>
                 </div>
-            </div>
-            <div class="form-check">
-                <input
-                    class="form-check-input"
-                    type="radio"
-                    name="modeRadios"
-                    id="radioDisengageMode"
-                    checked
-                />
-                <label class="form-check-label" for="radioDisengageMode">
-                    Disengage Mode
-                </label>
-                <div>
-                    Decreases the appearance of the links that you click on, and
-                    the links grow fainter the more you click.
-                    <br />Useful for activities that you want to avoid doing
-                    more of, like shopping and navigating to social media.
+                <div class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="modeRadios"
+                        id="radioDisengageMode"
+                        checked
+                    />
+                    <label class="form-check-label" for="radioDisengageMode">
+                        <b>Fade Mode</b>
+                    </label>
+                    <div>
+                        Decreases the appearance of the links that you click on,
+                        and the links grow fainter the more you click.
+                        <br />Useful for activities that you want to avoid doing
+                        more of, like shopping and navigating to social media.
+                    </div>
                 </div>
-            </div>
-            <div class="form-check">
-                <input
-                    class="form-check-input"
-                    type="radio"
-                    name="modeRadios"
-                    id="radioOff"
-                    checked
-                />
-                <label class="form-check-label" for="radioOff"> Off </label>
-                <div>Leaves no traces (and collects no data).</div>
-                <hr />
-                <button id="deactivate">Deactivate</button>
-                <hr />
+                <div class="form-check">
+                    <input
+                        class="form-check-input"
+                        type="radio"
+                        name="modeRadios"
+                        id="radioOff"
+                        checked
+                    />
+                    <label class="form-check-label" for="radioOff">
+                        <b>Off</b>
+                    </label>
+                    <div>Leaves no traces (and collects no data).</div>
+                    <hr />
+                    <h4>Deactivate ClickTrails</h4>
+                    <p>
+                        Clicking this button will delete all data that this
+                        extension has collected on
+                        <b><span id="domainName"></span></b>. This extension
+                        will not collect any data on this site unless
+                        reactivated.
+                    </p>
+                    <button
+                        type="button"
+                        class="btn btn-danger"
+                        id="deactivate"
+                    >
+                        Deactivate ClickTrails on this domain
+                    </button>
+                    <!-- <hr />
                 <button id="downloadAll">Download All</button>
                 <hr />
                 <div id="container-buttons"></div>
                 <hr />
-                <div id="container-links"></div>
+                <div id="container-links"></div> -->
+                    <hr />
+                    <a target="_blank" href="./index.html" id="reviewDownload"
+                        >Review and download your data</a
+                    >
+                </div>
             </div>
-        </div>
-        <div id="inactive">
-            <button id="reactivate">Reactivate</button>
-        </div>
-        <div id="inactive">
-          <hr />
-          <a target="_blank" href="./index.html" id="reviewDownload">Review and Download Data</a>
+            <div id="inactive">
+                <button type="button" class="btn btn-success" id="reactivate">
+                    Reactivate ClickTrails on this domain
+                </button>
+                <hr />
+                <a target="_blank" href="./index.html" id="reviewDownload"
+                    >Review and download your data</a
+                >
+            </div>
         </div>
         <script src="popup.js"></script>
     </body>
