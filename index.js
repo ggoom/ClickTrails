@@ -1,6 +1,7 @@
 chrome.storage.local.get(["history"], function (result) {
     const listContainer = document.getElementById("listContainer");
-    for (const domain in result["history"]) {
+    const filteredHistory = filterHistoryBlanks(result["history"]);
+    for (const domain in filteredHistory) {
         const newCheckbox = document.createElement("input");
         newCheckbox.setAttribute("type", "checkbox");
         newCheckbox.setAttribute("id", "checkbox-" + domain);
@@ -24,16 +25,23 @@ chrome.storage.local.get(["history"], function (result) {
 
 const downloadButton = document.getElementById("downloadSelections");
 downloadButton.addEventListener("click", () => {
-    chrome.storage.local.get(["history"], function (result) {
+    chrome.storage.local.get(["history", "settings"], function (result) {
+        // const filteredHistory = filterHistoryBlanks(result["history"]);
+        // result["history"] = filteredHistory;
+        const out = {history: {}, settings: {}}
+
         const checkboxes = document.getElementsByTagName("input");
         Array.from(checkboxes).forEach(function (el) {
             const tabHostname = el.id.replace("checkbox-", "");
-            if (!el.checked) {
-                delete result["history"][tabHostname];
+            if (el.checked) {
+                out["history"][tabHostname] = result["history"][tabHostname];
+                if (tabHostname in result["settings"]) {
+                    out["settings"][tabHostname] = result["settings"][tabHostname];
+                }
             }
         });
 
-        const resultStr = JSON.stringify(result, null, 2);
+        const resultStr = JSON.stringify(out, null, 2);
         var url = "data:application/json;base64," + btoa(resultStr);
         chrome.downloads.download({
             url: url,
@@ -41,3 +49,15 @@ downloadButton.addEventListener("click", () => {
         });
     });
 });
+
+function filterHistoryBlanks(history) {
+    Object.keys(history).forEach((key) => {
+        if (
+            Object.keys(history[key]["button_data"]).length === 0 &&
+            Object.keys(history[key]["click_data"]).length === 0
+        ) {
+            delete history[key];
+        }
+    });
+    return history;
+}

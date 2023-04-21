@@ -78,7 +78,6 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             const modeName = e.target.id;
             chrome.storage.local.get(["settings"]).then((result) => {
                 result["settings"][tabHostname]["mode"] = nameToMode(modeName);
-                console.log(result["settings"][tabHostname]);
                 chrome.storage.local.set(result);
             });
         });

@@ -49,19 +49,43 @@ chrome.storage.local
                 };
             }
             chrome.storage.local.set(result);
+
+            // LINKS
+            const links = document.getElementsByTagName("a");
+
+            const elevated = [];
+            Array.from(links).forEach((element) => {
+                element.addEventListener("click", (_) => recordLink(element));
+                elevateLinks(element, elevated);
+            });
+
+            // BUTTONS
+            const buttons = document.getElementsByTagName("button");
+            Array.from(buttons).forEach((element) => {
+                const buttonId = element.id;
+                if (buttonId === "") {
+                    return;
+                }
+                element.addEventListener("click", (_) => recordButton(element));
+                elevateButton(element);
+            });
+            const inputButtons = document.getElementsByTagName("input");
+            Array.from(inputButtons).forEach((element) => {
+                const type = element.type;
+                if (type !== "submit" && type !== "button") {
+                    return;
+                }
+                const buttonId = element.id;
+                if (buttonId === "") {
+                    return;
+                }
+                element.addEventListener("click", (_) => recordButton(element));
+                elevateButton(element);
+            });
         }
     });
 
 const initData = { clicks: 0 };
-
-// LINKS
-const links = document.getElementsByTagName("a");
-
-const elevated = [];
-Array.from(links).forEach((element) => {
-    element.addEventListener("click", (_) => recordLink(element));
-    elevateLinks(element, elevated);
-});
 
 function recordLink(el) {
     chrome.storage.local
@@ -170,31 +194,6 @@ function elevateLinks(el, elevated) {
         }
     });
 }
-
-// ### BUTTONS ###
-
-const buttons = document.getElementsByTagName("button");
-Array.from(buttons).forEach((element) => {
-    const buttonId = element.id;
-    if (buttonId === "") {
-        return;
-    }
-    element.addEventListener("click", (_) => recordButton(element));
-    elevateButton(element);
-});
-const inputButtons = document.getElementsByTagName("input");
-Array.from(inputButtons).forEach((element) => {
-    const type = element.type;
-    if (type !== "submit" && type !== "button") {
-        return;
-    }
-    const buttonId = element.id;
-    if (buttonId === "") {
-        return;
-    }
-    element.addEventListener("click", (_) => recordButton(element));
-    elevateButton(element);
-});
 
 function recordButton(element) {
     chrome.storage.local
