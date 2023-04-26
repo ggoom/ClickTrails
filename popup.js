@@ -63,8 +63,10 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 
     // Radio buttons
     chrome.storage.local.get(["settings"]).then((result) => {
+        if (result["settings"][tabHostname] === undefined) {
+            return;
+        }
         if (
-            result["settings"][tabHostname] === undefined ||
             result["settings"][tabHostname]["mode"] == null
         ) {
             result["settings"][tabHostname]["mode"] = 1;

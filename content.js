@@ -55,7 +55,7 @@ chrome.storage.local
 
             const elevated = [];
             Array.from(links).forEach((element) => {
-                element.addEventListener("click", (_) => recordLink(element));
+                element.addEventListener("click", (_) => recordLink(element, elevated));
                 elevateLinks(element, elevated);
             });
 
@@ -87,7 +87,7 @@ chrome.storage.local
 
 const initData = { clicks: 0 };
 
-function recordLink(el) {
+function recordLink(el, elevated) {
     chrome.storage.local
         .get(["click_data", "history", "settings"])
         .then((result) => {
@@ -120,6 +120,7 @@ function recordLink(el) {
             history[clicked].push(mode);
             result["history"][tabHostname]["click_data"] = history;
             chrome.storage.local.set(result);
+            elevateLinks(el, elevated);
         });
 }
 
@@ -148,11 +149,11 @@ function elevateLinks(el, elevated) {
             clickedHostname === tabHostname && clickedHash !== ""
                 ? clickedHash
                 : clickedURLStr;
-        if (elevated.includes(clicked)) {
-            return;
-        } else {
-            elevated.push(clicked);
-        }
+        // if (elevated.includes(clicked)) {
+        //     return;
+        // } else {
+        //     elevated.push(clicked);
+        // }
 
         // const total = Object.values(tabHostnameData).reduce((a, b) => a + b, 0);
         // if (total < 10) {
@@ -163,7 +164,7 @@ function elevateLinks(el, elevated) {
             return;
         }
         const numClicks = tabHostnameData[clicked]["clicks"];
-
+        console.log(numClicks);
         if (numClicks > 0) {
             // get parent
             // while (el.parentNode.childElementCount === 1) {
@@ -191,6 +192,9 @@ function elevateLinks(el, elevated) {
             // });
         } else if (numClicks < 0) {
             el.style.opacity = disengageOpacity(numClicks);
+        } else {
+            el.style.opacity = 1.0;
+            el.style.boxShadow = "none";
         }
     });
 }
@@ -221,6 +225,8 @@ function recordButton(element) {
             history[buttonId].push(mode);
             result["history"][tabHostname]["button_data"] = history;
             chrome.storage.local.set(result);
+            
+            elevateButton(element);
         });
 }
 
@@ -260,6 +266,9 @@ function elevateButton(el) {
             )}px rgba(252, 121, 237, ${highlightOpacity(numClicks)})`;
         } else if (numClicks < 0) {
             el.style.opacity = disengageOpacity(numClicks);
+        }  else {
+            el.style.opacity = 1.0;
+            el.style.boxShadow = "none";
         }
     });
 }
@@ -269,9 +278,9 @@ function borderSize(numClicks) {
 }
 
 function highlightOpacity(numClicks) {
-    return Math.min(numClicks * 0.1 + 0.1, 0.9);
+    return Math.min(numClicks * 0.1 + 0.2, 1.0);
 }
 
 function disengageOpacity(numClicks) {
-    return Math.max(1.0 + numClicks * 0.1 - 0.1, 0.1);
+    return Math.max(0.8 + numClicks * 0.1, 0.0);
 }
