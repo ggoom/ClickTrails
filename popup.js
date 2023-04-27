@@ -3,12 +3,23 @@ chrome.storage.local.get(["settings"]).then((result) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         const url = tabs[0].url;
         const tabURL = new URL(url.replace(/\/$/, "")); //.split(/[?#]/)[0]
-        const tabHostname = tabURL.hostname;
+        const tabHostname = tabURL.hostname.replace(/^www\./, "");
 
         const activeSection = document.getElementById("active");
         const inactiveSection = document.getElementById("inactive");
+        const unavailableSection = document.getElementById("unavailable");
         const hostnameSpans = document.getElementsByClassName("domainName");
         Array.from(hostnameSpans).forEach((el) => (el.innerHTML = tabHostname));
+
+        if (
+            result["settings"] == undefined ||
+            result["settings"][tabHostname] === undefined
+        ) {
+            activeSection.style.display = "none";
+            inactiveSection.style.display = "none";
+            unavailableSection.style.display = "block";
+            return;
+        }
 
         if (
             tabHostname in result["settings"] &&
@@ -17,9 +28,11 @@ chrome.storage.local.get(["settings"]).then((result) => {
         ) {
             activeSection.style.display = "none";
             inactiveSection.style.display = "block";
+            unavailableSection.style.display = "none";
         } else {
             inactiveSection.style.display = "none";
             activeSection.style.display = "block";
+            unavailableSection.style.display = "none";
         }
     });
 });
@@ -31,7 +44,7 @@ const radioButtons = document.querySelectorAll('input[name="modeRadios"]');
 chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const url = tabs[0].url;
     const tabURL = new URL(url.replace(/\/$/, "")); //.split(/[?#]/)[0]
-    const tabHostname = tabURL.hostname;
+    const tabHostname = tabURL.hostname.replace(/^www\./, "");
 
     // Deactivate button
     if (deactivateButton) {
@@ -39,6 +52,7 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
             chrome.storage.local.get(
                 ["settings", "button_data", "click_data", "history"],
                 function (result) {
+                    console.log(tabHostname);
                     result["settings"][tabHostname]["active"] = false;
                     delete result["button_data"][tabHostname];
                     delete result["click_data"][tabHostname];
@@ -63,12 +77,13 @@ chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
 
     // Radio buttons
     chrome.storage.local.get(["settings"]).then((result) => {
-        if (result["settings"][tabHostname] === undefined) {
+        if (
+            result["settings"] == undefined ||
+            result["settings"][tabHostname] === undefined
+        ) {
             return;
         }
-        if (
-            result["settings"][tabHostname]["mode"] == null
-        ) {
+        if (result["settings"][tabHostname]["mode"] == null) {
             result["settings"][tabHostname]["mode"] = 1;
         }
         const mode = result["settings"][tabHostname]["mode"];

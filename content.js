@@ -7,7 +7,7 @@
 // ### End code ###
 
 const tabURL = new URL(document.location.href.replace(/\/$/, "")); //.split(/[?#]/)[0]
-const tabHostname = tabURL.hostname;
+const tabHostname = tabURL.hostname.replace(/^www\./,'');
 
 chrome.storage.local
     .get(["click_data", "button_data", "history", "settings"])
@@ -132,7 +132,7 @@ function elevateLinks(el, elevated) {
         } catch (e) {
             return;
         }
-        const tabHostname = tabURL.hostname;
+        const tabHostname = tabURL.hostname.replace(/^www\./,'');
 
         let tabHostnameData = result["click_data"][tabHostname];
         let clickedURL;
@@ -238,7 +238,7 @@ function elevateButton(el) {
         } catch (e) {
             return;
         }
-        const tabHostname = tabURL.hostname;
+        const tabHostname = tabURL.hostname.replace(/^www\./,'');
 
         const buttonId = el.id;
         if (buttonId === "") {
